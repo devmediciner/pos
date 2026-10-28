@@ -1,0 +1,239 @@
+<!DOCTYPE html>
+<html lang="pt-BR" data-theme="dark">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pós-Graduação em Pediatria | CENBRAP</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Bootstrap Icons -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css">
+    
+    <!-- Stylesheet -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Top Navigation Bar (Clean & Minimalist) -->
+    <header class="app-header">
+        <div class="header-left">
+            <div class="brand">
+                <div class="brand-logo">
+                    <i class="bi bi-heart-pulse"></i>
+                </div>
+                <div class="brand-info">
+                    <span class="brand-title">CENBRAP <span>Pediatria</span></span>
+                </div>
+            </div>
+        </div>
+
+        <div class="header-search">
+            <i class="bi bi-search search-icon"></i>
+            <input type="text" id="global-search" placeholder="Buscar módulo ou aula... (/)" autocomplete="off">
+            <button class="clear-search-btn" id="clear-search" title="Limpar busca" style="display: none;">
+                <i class="bi bi-x"></i>
+            </button>
+        </div>
+
+        <div class="header-right">
+            <button class="theme-toggle-btn" id="theme-toggle" title="Alternar tema" aria-label="Alternar tema">
+                <i class="bi bi-moon-stars dark-icon"></i>
+                <i class="bi bi-sun light-icon"></i>
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Container Layout -->
+    <div class="app-layout">
+        <!-- Sidebar: Course Modules Drawer -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <div class="sidebar-title-row">
+                    <h3>Módulos</h3>
+                    <span class="module-count-badge" id="module-counter">20 itens</span>
+                </div>
+                <div class="module-filter-tabs">
+                    <button class="filter-tab active" data-filter="todos">Todos</button>
+                    <button class="filter-tab" data-filter="locais">Com Vídeo</button>
+                    <button class="filter-tab" data-filter="bonus">Outros</button>
+                </div>
+            </div>
+
+            <div class="modules-list" id="modules-list">
+                <!-- Dynamically populated by app.js -->
+            </div>
+        </aside>
+
+        <!-- Main Workspace Area -->
+        <main class="main-content" id="main-content">
+            <!-- Module Header Banner (Minimalist) -->
+            <section class="module-hero" id="module-hero">
+                <div class="hero-top">
+                    <div class="breadcrumbs">
+                        <span>Pós EAD Pediatria</span>
+                        <i class="bi bi-chevron-right"></i>
+                        <span id="hero-module-number">Módulo 1</span>
+                    </div>
+                    <div class="hero-actions">
+                        <a href="#" target="_blank" rel="noopener noreferrer" class="btn btn-outline" id="btn-slides">
+                            <i class="bi bi-box-arrow-up-right"></i> Slides (Dropbox)
+                        </a>
+                        <button class="btn btn-secondary" id="btn-scroll-quiz">
+                            <i class="bi bi-check2-square"></i> Questões
+                        </button>
+                    </div>
+                </div>
+
+                <div class="hero-main">
+                    <h1 class="module-title" id="module-title">Pediatria na Atenção Básica da Saúde</h1>
+                    <div class="hero-meta">
+                        <span id="module-professor-wrap"><i class="bi bi-person"></i> <span id="module-professor">André Viu Matheus</span></span>
+                        <span>•</span>
+                        <span id="module-lessons-count">7 aulas</span>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Video Player Stage (Clean Theater) -->
+            <section class="video-theater" id="video-theater">
+                <div class="theater-header">
+                    <div class="theater-title-info">
+                        <h2 id="current-lesson-title">Parte 1: O que você aprenderá neste módulo</h2>
+                    </div>
+                    <div class="theater-controls">
+                        <!-- Video Source Toggle (Drive / Local) -->
+                        <div class="source-selector">
+                            <button class="source-btn active" id="btn-source-drive" title="Reproduzir via Google Drive">
+                                <i class="bi bi-cloud-check"></i> Drive
+                            </button>
+                            <button class="source-btn" id="btn-source-local" title="Reproduzir arquivo local offline">
+                                <i class="bi bi-hdd"></i> Local
+                            </button>
+                        </div>
+
+                        <!-- Playback Speed Selector -->
+                        <div class="speed-selector" id="speed-selector">
+                            <button class="speed-btn" data-speed="0.75">0.75x</button>
+                            <button class="speed-btn active" data-speed="1.0">1x</button>
+                            <button class="speed-btn" data-speed="1.25">1.25x</button>
+                            <button class="speed-btn" data-speed="1.5">1.5x</button>
+                            <button class="speed-btn" data-speed="2.0">2x</button>
+                        </div>
+
+                        <!-- Prev / Next Navigation -->
+                        <div class="lesson-nav-buttons">
+                            <button class="nav-btn" id="btn-prev-lesson" title="Aula anterior">
+                                <i class="bi bi-chevron-left"></i> Anterior
+                            </button>
+                            <button class="nav-btn" id="btn-next-lesson" title="Próxima aula">
+                                Próxima <i class="bi bi-chevron-right"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Video Frame -->
+                <div class="video-container" id="video-container">
+                    <video id="course-video" controls preload="metadata" playsinline>
+                        <source id="video-source" src="" type="video/mp4">
+                        Seu navegador não suporta reprodução de vídeos MP4.
+                    </video>
+                    <!-- Embedded iframe for Google Drive or YouTube -->
+                    <iframe id="course-iframe" style="display: none;" allow="autoplay; fullscreen" allowfullscreen></iframe>
+                    <!-- Fallback / External Banner if no video -->
+                    <div class="video-external-notice" id="video-external-notice" style="display: none;">
+                        <i class="bi bi-play-circle"></i>
+                        <h3>Vídeo Online</h3>
+                        <p id="external-video-desc">Este vídeo pode ser assistido no portal CENBRAP.</p>
+                        <a href="#" target="_blank" rel="noopener noreferrer" class="btn btn-primary" id="btn-open-external-player">
+                            Abrir no Portal CENBRAP
+                        </a>
+                    </div>
+                </div>
+
+                <!-- Parts Playlist Row -->
+                <div class="playlist-strip" id="playlist-strip">
+                    <div class="playlist-header">
+                        <span>Aulas deste módulo:</span>
+                        <span class="playlist-progress" id="playlist-progress">1 de 7</span>
+                    </div>
+                    <div class="playlist-cards" id="playlist-cards">
+                        <!-- Populated by app.js -->
+                    </div>
+                </div>
+            </section>
+
+            <!-- Bottom Tabs Section: Quiz & Full Syllabus -->
+            <section class="details-section">
+                <div class="details-tabs">
+                    <button class="details-tab active" data-tab="tab-quiz">
+                        <i class="bi bi-check2-circle"></i>
+                        <span>Questões</span>
+                        <span class="tab-badge" id="quiz-count-badge">10</span>
+                    </button>
+                    <button class="details-tab" data-tab="tab-syllabus">
+                        <i class="bi bi-list-ul"></i>
+                        <span>Grade de Aulas</span>
+                    </button>
+                    <button class="details-tab" data-tab="tab-notes">
+                        <i class="bi bi-pencil"></i>
+                        <span>Anotações</span>
+                    </button>
+                </div>
+
+                <div class="tab-content active" id="tab-quiz">
+                    <!-- Quiz Header & Score Bar -->
+                    <div class="quiz-dashboard">
+                        <div class="quiz-stats">
+                            <span class="stat-value" id="quiz-score-display">0 / 10</span>
+                            <div class="quiz-progress-bar-container">
+                                <div class="quiz-progress-bar" id="quiz-progress-bar" style="width: 0%;"></div>
+                            </div>
+                            <span class="quiz-percentage" id="quiz-percentage">0%</span>
+                        </div>
+
+                        <div class="quiz-actions">
+                            <button class="btn btn-sm btn-outline" id="btn-show-answers">
+                                Revelar Gabarito
+                            </button>
+                            <button class="btn btn-sm btn-ghost" id="btn-reset-quiz">
+                                Reiniciar
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Questions List Container -->
+                    <div class="questions-container" id="questions-container">
+                        <!-- Populated by app.js -->
+                    </div>
+                </div>
+
+                <!-- Tab: Full Syllabus -->
+                <div class="tab-content" id="tab-syllabus">
+                    <div class="syllabus-container" id="syllabus-container">
+                        <!-- Populated by app.js -->
+                    </div>
+                </div>
+
+                <!-- Tab: Notes -->
+                <div class="tab-content" id="tab-notes">
+                    <div class="notes-container">
+                        <div class="notes-header">
+                            <h4>Anotações deste Módulo</h4>
+                            <span class="notes-save-status" id="notes-status">Salvo automaticamente</span>
+                        </div>
+                        <textarea id="module-notes-textarea" placeholder="Digite suas anotações e resumos aqui..."></textarea>
+                    </div>
+                </div>
+            </section>
+        </main>
+    </div>
+
+    <!-- Scripts -->
+    <script src="course-data.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

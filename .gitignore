@@ -1,0 +1,11 @@
+# Ignorar pasta de vídeos pesados (13 GB)
+videos/
+*.mp4
+*.ts
+
+# Python & Sistema
+__pycache__/
+*.pyc
+.env
+.DS_Store
+Thumbs.db
