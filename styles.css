@@ -109,6 +109,27 @@ body {
 .header-left {
     display: flex;
     align-items: center;
+    gap: 10px;
+}
+
+.mobile-menu-toggle {
+    display: none;
+    width: 36px;
+    height: 36px;
+    border-radius: var(--radius-sm);
+    background: var(--bg-card);
+    border: 1px solid var(--border);
+    color: var(--text-primary);
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    font-size: 17px;
+    transition: all var(--transition);
+}
+
+.mobile-menu-toggle:hover {
+    background: var(--bg-card-hover);
+    border-color: var(--border-hover);
 }
 
 .brand {
@@ -261,17 +282,34 @@ body {
     margin-bottom: 10px;
 }
 
-.sidebar-title-row h3 {
-    font-size: 13px;
-    font-weight: 700;
-    text-transform: uppercase;
-    letter-spacing: 0.5px;
-    color: var(--text-secondary);
+.sidebar-header-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
 }
 
-.module-count-badge {
-    font-size: 11px;
+.sidebar-close-btn {
+    display: none;
+    width: 28px;
+    height: 28px;
+    border-radius: var(--radius-sm);
+    background: var(--bg-base);
+    border: 1px solid var(--border);
     color: var(--text-muted);
+    cursor: pointer;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    transition: all var(--transition);
+}
+
+.sidebar-close-btn:hover {
+    color: var(--text-primary);
+    border-color: var(--border-hover);
+}
+
+.sidebar-overlay {
+    display: none;
 }
 
 .module-filter-tabs {
@@ -636,6 +674,46 @@ body {
     cursor: not-allowed;
 }
 
+/* Open in Google Drive Link */
+.btn-drive-link {
+    background: rgba(16, 185, 129, 0.1);
+    border-color: rgba(16, 185, 129, 0.3);
+    color: var(--primary);
+    text-decoration: none;
+}
+
+.btn-drive-link:hover {
+    background: rgba(16, 185, 129, 0.2);
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+/* Fullscreen Close Floating Button */
+.fullscreen-close-btn {
+    display: none;
+    position: absolute;
+    top: 14px;
+    right: 14px;
+    z-index: 2147483647;
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    background: rgba(15, 23, 42, 0.85);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    color: #ffffff;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    cursor: pointer;
+    backdrop-filter: blur(8px);
+    box-shadow: 0 4px 16px rgba(0, 0, 0, 0.6);
+    transition: transform var(--transition), background var(--transition);
+}
+
+.fullscreen-close-btn:active {
+    transform: scale(0.9);
+}
+
 /* Video Container */
 .video-container {
     position: relative;
@@ -644,6 +722,7 @@ body {
     background: #000000;
     border-radius: var(--radius-md);
     overflow: hidden;
+    min-height: 200px;
 }
 
 .video-container video,
@@ -653,6 +732,96 @@ body {
     object-fit: contain;
     outline: none;
     border: none;
+}
+
+/* Native Fullscreen Rules (Must be separated to avoid invalidating selector lists in different browsers) */
+.video-container:fullscreen {
+    width: 100vw !important;
+    height: 100vh !important;
+    max-height: 100vh !important;
+    border-radius: 0 !important;
+    background: #000000 !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+.video-container:fullscreen video,
+.video-container:fullscreen iframe {
+    width: 100vw !important;
+    height: 100vh !important;
+    max-height: 100vh !important;
+    border-radius: 0 !important;
+    object-fit: contain;
+}
+
+.video-container:-webkit-full-screen {
+    width: 100vw !important;
+    height: 100vh !important;
+    max-height: 100vh !important;
+    border-radius: 0 !important;
+    background: #000000 !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+.video-container:-webkit-full-screen video,
+.video-container:-webkit-full-screen iframe {
+    width: 100vw !important;
+    height: 100vh !important;
+    max-height: 100vh !important;
+    border-radius: 0 !important;
+    object-fit: contain;
+}
+
+/* CSS Fallback Fullscreen & Active Fullscreen Class (For iOS Safari & mobile devices) */
+.video-container.mobile-fullscreen-active {
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    right: 0 !important;
+    bottom: 0 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    max-width: 100vw !important;
+    max-height: 100vh !important;
+    z-index: 999999 !important;
+    border-radius: 0 !important;
+    background: #000000 !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.video-container.mobile-fullscreen-active video,
+.video-container.mobile-fullscreen-active iframe {
+    width: 100vw !important;
+    height: 100vh !important;
+    border-radius: 0 !important;
+}
+
+/* Close button displayed whenever in ANY fullscreen mode */
+.video-container:fullscreen .fullscreen-close-btn {
+    display: flex !important;
+}
+
+.video-container:-webkit-full-screen .fullscreen-close-btn {
+    display: flex !important;
+}
+
+.video-container.fullscreen-mode .fullscreen-close-btn {
+    display: flex !important;
+}
+
+.video-container.mobile-fullscreen-active .fullscreen-close-btn {
+    display: flex !important;
 }
 
 .video-external-notice {
@@ -1105,19 +1274,255 @@ body {
     border-color: var(--border-hover);
 }
 
-/* Responsive */
+/* Responsive Styles */
 @media (max-width: 1024px) {
-    .app-layout {
-        flex-direction: column;
+    .mobile-menu-toggle {
+        display: inline-flex;
     }
+
+    .sidebar-close-btn {
+        display: inline-flex;
+    }
+
     .sidebar {
-        width: 100%;
-        height: auto;
-        max-height: 280px;
-        position: relative;
+        position: fixed;
+        left: 0;
         top: 0;
+        bottom: 0;
+        width: 320px;
+        max-width: 85vw;
+        height: 100vh;
+        max-height: 100vh;
+        background: var(--bg-surface);
+        border-right: 1px solid var(--border);
+        z-index: 1000;
+        transform: translateX(-100%);
+        transition: transform 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+        box-shadow: 0 0 40px rgba(0, 0, 0, 0.6);
+        overflow-y: auto;
+        -webkit-overflow-scrolling: touch;
     }
+
+    .sidebar.open {
+        transform: translateX(0);
+    }
+
+    .sidebar-overlay {
+        display: none;
+        position: fixed;
+        inset: 0;
+        background: rgba(0, 0, 0, 0.65);
+        z-index: 999;
+        backdrop-filter: blur(3px);
+    }
+
+    .sidebar-overlay.active {
+        display: block;
+    }
+
     .main-content {
         padding: 16px;
+        max-width: 100%;
+    }
+}
+
+@media (max-width: 768px) {
+    .app-header {
+        padding: 0 12px;
+        gap: 8px;
+    }
+
+    .brand-title {
+        font-size: 13.5px;
+    }
+
+    .header-search {
+        flex: 1;
+        max-width: 180px;
+        min-width: 90px;
+    }
+
+    .header-search input {
+        height: 32px;
+        font-size: 12px;
+        padding: 0 24px 0 28px;
+    }
+
+    .header-search .search-icon {
+        left: 8px;
+        font-size: 11px;
+    }
+
+    .module-hero {
+        padding: 14px 16px;
+        gap: 10px;
+    }
+
+    .module-title {
+        font-size: 16px;
+        line-height: 1.3;
+    }
+
+    .hero-top {
+        gap: 8px;
+    }
+
+    .hero-actions {
+        width: 100%;
+        display: flex;
+        gap: 8px;
+    }
+
+    .hero-actions .btn {
+        flex: 1;
+        justify-content: center;
+        padding: 7px 10px;
+        font-size: 12px;
+    }
+
+    .video-theater {
+        padding: 12px;
+        gap: 12px;
+        border-radius: var(--radius-md);
+    }
+
+    .theater-header {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 10px;
+    }
+
+    .theater-title-info h2 {
+        font-size: 13.5px;
+        line-height: 1.35;
+    }
+
+    .theater-controls {
+        display: flex;
+        flex-wrap: wrap;
+        align-items: center;
+        justify-content: space-between;
+        gap: 8px;
+        width: 100%;
+    }
+
+    .source-selector {
+        flex-shrink: 0;
+    }
+
+    .source-btn {
+        padding: 6px 10px;
+        font-size: 11.5px;
+        min-height: 34px;
+    }
+
+    .nav-btn {
+        padding: 6px 10px;
+        font-size: 12px;
+        min-height: 34px;
+    }
+
+    .lesson-nav-buttons {
+        gap: 4px;
+    }
+
+    .video-container {
+        border-radius: var(--radius-sm);
+        min-height: 200px;
+    }
+
+    .playlist-cards {
+        grid-template-columns: repeat(auto-fill, minmax(130px, 1fr));
+        gap: 6px;
+    }
+
+    .playlist-card {
+        padding: 8px;
+    }
+
+    .playlist-card-title {
+        font-size: 11.5px;
+    }
+
+    .details-section {
+        padding: 14px 16px;
+    }
+
+    .details-tabs {
+        gap: 6px;
+        overflow-x: auto;
+        -webkit-overflow-scrolling: touch;
+        padding-bottom: 2px;
+    }
+
+    .details-tab {
+        padding: 8px 12px;
+        font-size: 12px;
+        white-space: nowrap;
+        flex-shrink: 0;
+    }
+
+    .quiz-dashboard {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 12px;
+    }
+
+    .quiz-actions {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .quiz-actions .btn {
+        flex: 1;
+        text-align: center;
+        justify-content: center;
+    }
+
+    .question-card {
+        padding: 14px;
+    }
+
+    .question-statement {
+        font-size: 13.5px;
+        line-height: 1.45;
+    }
+
+    .option-btn {
+        padding: 12px 14px;
+        font-size: 13px;
+        min-height: 46px;
+    }
+}
+
+@media (max-width: 480px) {
+    .hide-mobile-xs {
+        display: none !important;
+    }
+
+    .brand-title span {
+        display: none;
+    }
+
+    .header-search {
+        max-width: 135px;
+    }
+
+    .theater-controls {
+        gap: 6px;
+    }
+
+    .source-btn {
+        padding: 6px 8px;
+        font-size: 11px;
+    }
+
+    .nav-btn {
+        padding: 6px 8px;
+    }
+
+    .playlist-cards {
+        grid-template-columns: 1fr 1fr;
     }
 }

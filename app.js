@@ -24,6 +24,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const btnSlidesEl = document.getElementById("btn-slides");
 
     // Video Player Elements
+    const videoContainer = document.getElementById("video-container");
     const courseVideo = document.getElementById("course-video");
     const courseIframe = document.getElementById("course-iframe");
     const currentLessonTitleEl = document.getElementById("current-lesson-title");
@@ -36,6 +37,16 @@ document.addEventListener("DOMContentLoaded", () => {
     const btnNextLesson = document.getElementById("btn-next-lesson");
     const speedButtons = document.querySelectorAll(".speed-btn");
     const speedSelectorEl = document.getElementById("speed-selector");
+
+    // Mobile & Fullscreen Elements
+    const sidebarEl = document.getElementById("sidebar");
+    const btnToggleSidebar = document.getElementById("btn-toggle-sidebar");
+    const btnCloseSidebar = document.getElementById("btn-close-sidebar");
+    const sidebarOverlay = document.getElementById("sidebar-overlay");
+    const btnFullscreen = document.getElementById("btn-fullscreen");
+    const fullscreenIcon = document.getElementById("fullscreen-icon");
+    const btnExitFullscreen = document.getElementById("btn-exit-fullscreen");
+    const btnOpenDrive = document.getElementById("btn-open-drive");
 
     // Source Selector Elements
     const btnSourceDrive = document.getElementById("btn-source-drive");
@@ -63,6 +74,14 @@ document.addEventListener("DOMContentLoaded", () => {
     const detailsTabs = document.querySelectorAll(".details-tab");
     const themeToggleBtn = document.getElementById("theme-toggle");
 
+    function adjustSearchPlaceholder() {
+        if (globalSearchInput) {
+            globalSearchInput.placeholder = window.innerWidth <= 600 ? "Buscar..." : "Buscar módulo ou aula... (/)";
+        }
+    }
+    adjustSearchPlaceholder();
+    window.addEventListener("resize", adjustSearchPlaceholder);
+
     // Theme Switcher
     const savedTheme = localStorage.getItem("pediatria_theme") || "dark";
     document.documentElement.setAttribute("data-theme", savedTheme);
@@ -73,6 +92,23 @@ document.addEventListener("DOMContentLoaded", () => {
         document.documentElement.setAttribute("data-theme", nextTheme);
         localStorage.setItem("pediatria_theme", nextTheme);
     });
+
+    // Mobile Sidebar Drawer Handlers
+    function openSidebar() {
+        if (sidebarEl) sidebarEl.classList.add("open");
+        if (sidebarOverlay) sidebarOverlay.classList.add("active");
+        document.body.style.overflow = "hidden";
+    }
+
+    function closeSidebar() {
+        if (sidebarEl) sidebarEl.classList.remove("open");
+        if (sidebarOverlay) sidebarOverlay.classList.remove("active");
+        document.body.style.overflow = "";
+    }
+
+    if (btnToggleSidebar) btnToggleSidebar.addEventListener("click", openSidebar);
+    if (btnCloseSidebar) btnCloseSidebar.addEventListener("click", closeSidebar);
+    if (sidebarOverlay) sidebarOverlay.addEventListener("click", closeSidebar);
 
     // Source Selector Handlers
     function updateSourceButtons() {
@@ -191,6 +227,7 @@ document.addEventListener("DOMContentLoaded", () => {
         renderSyllabus();
         loadNotes();
         renderSidebar();
+        closeSidebar();
     }
 
     // Lesson / Video Player Management
@@ -247,12 +284,23 @@ document.addEventListener("DOMContentLoaded", () => {
 
         let useDrive = (currentVideoSource === "drive" && hasDrive) || (!hasLocal && hasDrive);
 
+        // Update Open In Drive link
+        if (btnOpenDrive) {
+            if (hasDrive || aula.drive_url) {
+                btnOpenDrive.href = aula.drive_url || `https://drive.google.com/file/d/${driveId}/view`;
+                btnOpenDrive.style.display = "inline-flex";
+            } else {
+                btnOpenDrive.style.display = "none";
+            }
+        }
+
         if (useDrive && driveId) {
             try { courseVideo.pause(); } catch (e) {}
             courseVideo.style.display = "none";
             videoExternalNotice.style.display = "none";
             courseIframe.style.display = "block";
             courseIframe.src = `https://drive.google.com/file/d/${driveId}/preview`;
+            if (speedSelectorEl) speedSelectorEl.style.display = "none";
         } else if (hasLocal) {
             courseIframe.style.display = "none";
             courseIframe.src = "";
@@ -260,6 +308,7 @@ document.addEventListener("DOMContentLoaded", () => {
             videoExternalNotice.style.display = "none";
             courseVideo.src = encodeURI(aula.local_video);
             courseVideo.load();
+            if (speedSelectorEl && currentVideoSource === "local") speedSelectorEl.style.display = "flex";
         } else {
             try { courseVideo.pause(); } catch (e) {}
             courseVideo.style.display = "none";
@@ -268,6 +317,7 @@ document.addEventListener("DOMContentLoaded", () => {
             videoExternalNotice.style.display = "flex";
             externalVideoDesc.textContent = `A aula "${aula.titulo}" pode ser assistida no portal CENBRAP.`;
             btnOpenExternal.href = aula.video_url || "https://portal.cenbrap.edu.br/PosEad";
+            if (speedSelectorEl) speedSelectorEl.style.display = "none";
         }
     }
 
@@ -287,6 +337,109 @@ document.addEventListener("DOMContentLoaded", () => {
             speedButtons.forEach(b => b.classList.remove("active"));
             btn.classList.add("active");
         });
+    });
+
+    // Fullscreen Management (Native with CSS Fallback for iOS/Mobile)
+    function isFullscreenActive() {
+        return Boolean(
+            document.fullscreenElement ||
+            document.webkitFullscreenElement ||
+            document.mozFullScreenElement ||
+            document.msFullscreenElement ||
+            (videoContainer && videoContainer.classList.contains("mobile-fullscreen-active"))
+        );
+    }
+
+    function updateFullscreenUI(active) {
+        if (videoContainer) {
+            videoContainer.classList.toggle("fullscreen-mode", active);
+            if (!active) {
+                videoContainer.classList.remove("mobile-fullscreen-active");
+            }
+        }
+        if (fullscreenIcon) {
+            fullscreenIcon.className = active ? "bi bi-fullscreen-exit" : "bi bi-fullscreen";
+        }
+        if (btnFullscreen) {
+            const label = btnFullscreen.querySelector(".hide-mobile-xs");
+            if (label) label.textContent = active ? "Sair Tela" : "Tela Cheia";
+        }
+    }
+
+    function exitFullscreen() {
+        if (document.fullscreenElement || document.webkitFullscreenElement) {
+            if (document.exitFullscreen) {
+                document.exitFullscreen().catch(() => {});
+            } else if (document.webkitExitFullscreen) {
+                document.webkitExitFullscreen();
+            } else if (document.mozCancelFullScreen) {
+                document.mozCancelFullScreen();
+            } else if (document.msExitFullscreen) {
+                document.msExitFullscreen();
+            }
+        }
+        updateFullscreenUI(false);
+    }
+
+    function enterFullscreen() {
+        const isLocalVideo = courseVideo && courseVideo.style.display !== "none";
+
+        // iOS Safari native video fullscreen for local MP4
+        if (isLocalVideo && courseVideo.webkitEnterFullscreen) {
+            try {
+                courseVideo.webkitEnterFullscreen();
+                return;
+            } catch (e) {}
+        }
+
+        // Standard element fullscreen
+        const el = videoContainer;
+        if (!el) return;
+        const req = el.requestFullscreen || el.webkitRequestFullscreen || el.mozRequestFullScreen || el.msRequestFullscreen;
+
+        if (req) {
+            try {
+                const p = req.call(el);
+                if (p && typeof p.then === "function") {
+                    p.then(() => updateFullscreenUI(true)).catch(() => {
+                        el.classList.add("mobile-fullscreen-active");
+                        updateFullscreenUI(true);
+                    });
+                } else {
+                    updateFullscreenUI(true);
+                }
+            } catch (err) {
+                el.classList.add("mobile-fullscreen-active");
+                updateFullscreenUI(true);
+            }
+        } else {
+            // Fallback to CSS fullscreen (essential for iPhone Safari with iframe)
+            el.classList.add("mobile-fullscreen-active");
+            updateFullscreenUI(true);
+        }
+    }
+
+    function toggleFullscreen() {
+        if (isFullscreenActive()) {
+            exitFullscreen();
+        } else {
+            enterFullscreen();
+        }
+    }
+
+    if (btnFullscreen) {
+        btnFullscreen.addEventListener("click", toggleFullscreen);
+    }
+
+    if (btnExitFullscreen) {
+        btnExitFullscreen.addEventListener("click", exitFullscreen);
+    }
+
+    document.addEventListener("fullscreenchange", () => {
+        updateFullscreenUI(isFullscreenActive());
+    });
+    document.addEventListener("webkitfullscreenchange", () => {
+        updateFullscreenUI(isFullscreenActive());
     });
 
     // Quiz Implementation

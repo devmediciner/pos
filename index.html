@@ -20,6 +20,9 @@
     <!-- Top Navigation Bar (Clean & Minimalist) -->
     <header class="app-header">
         <div class="header-left">
+            <button class="mobile-menu-toggle" id="btn-toggle-sidebar" title="Abrir menu de módulos" aria-label="Abrir menu de módulos">
+                <i class="bi bi-layout-sidebar"></i>
+            </button>
             <div class="brand">
                 <div class="brand-logo">
                     <i class="bi bi-heart-pulse"></i>
@@ -53,7 +56,12 @@
             <div class="sidebar-header">
                 <div class="sidebar-title-row">
                     <h3>Módulos</h3>
-                    <span class="module-count-badge" id="module-counter">20 itens</span>
+                    <div class="sidebar-header-actions">
+                        <span class="module-count-badge" id="module-counter">20 itens</span>
+                        <button class="sidebar-close-btn" id="btn-close-sidebar" aria-label="Fechar menu" title="Fechar menu">
+                            <i class="bi bi-x-lg"></i>
+                        </button>
+                    </div>
                 </div>
                 <div class="module-filter-tabs">
                     <button class="filter-tab active" data-filter="todos">Todos</button>
@@ -66,6 +74,9 @@
                 <!-- Dynamically populated by app.js -->
             </div>
         </aside>
+
+        <!-- Mobile Drawer Overlay Backdrop -->
+        <div class="sidebar-overlay" id="sidebar-overlay"></div>
 
         <!-- Main Workspace Area -->
         <main class="main-content" id="main-content">
@@ -114,7 +125,12 @@
                             </button>
                         </div>
 
-                        <!-- Playback Speed Selector -->
+                        <!-- Open Directly in Google Drive (App or Web) -->
+                        <a id="btn-open-drive" class="nav-btn btn-drive-link" target="_blank" rel="noopener noreferrer" style="display: none;" title="Abrir vídeo diretamente no Google Drive">
+                            <i class="bi bi-box-arrow-up-right"></i> <span class="hide-mobile-xs">Abrir no Drive</span>
+                        </a>
+
+                        <!-- Playback Speed Selector (For Local Video) -->
                         <div class="speed-selector" id="speed-selector">
                             <button class="speed-btn" data-speed="0.75">0.75x</button>
                             <button class="speed-btn active" data-speed="1.0">1x</button>
@@ -123,13 +139,18 @@
                             <button class="speed-btn" data-speed="2.0">2x</button>
                         </div>
 
+                        <!-- Fullscreen Toggle Button (Mobile & Desktop) -->
+                        <button class="nav-btn btn-fullscreen" id="btn-fullscreen" title="Tela Cheia">
+                            <i class="bi bi-fullscreen" id="fullscreen-icon"></i> <span class="hide-mobile-xs">Tela Cheia</span>
+                        </button>
+
                         <!-- Prev / Next Navigation -->
                         <div class="lesson-nav-buttons">
                             <button class="nav-btn" id="btn-prev-lesson" title="Aula anterior">
-                                <i class="bi bi-chevron-left"></i> Anterior
+                                <i class="bi bi-chevron-left"></i> <span class="hide-mobile-xs">Anterior</span>
                             </button>
                             <button class="nav-btn" id="btn-next-lesson" title="Próxima aula">
-                                Próxima <i class="bi bi-chevron-right"></i>
+                                <span class="hide-mobile-xs">Próxima</span> <i class="bi bi-chevron-right"></i>
                             </button>
                         </div>
                     </div>
@@ -137,12 +158,17 @@
 
                 <!-- Video Frame -->
                 <div class="video-container" id="video-container">
-                    <video id="course-video" controls preload="metadata" playsinline>
+                    <!-- Close button for CSS fullscreen / mobile overlay mode -->
+                    <button class="fullscreen-close-btn" id="btn-exit-fullscreen" title="Sair da tela cheia">
+                        <i class="bi bi-x-lg"></i>
+                    </button>
+
+                    <video id="course-video" controls preload="metadata" playsinline webkit-playsinline x5-playsinline>
                         <source id="video-source" src="" type="video/mp4">
                         Seu navegador não suporta reprodução de vídeos MP4.
                     </video>
-                    <!-- Embedded iframe for Google Drive or YouTube -->
-                    <iframe id="course-iframe" style="display: none;" allow="autoplay; fullscreen" allowfullscreen></iframe>
+                    <!-- Embedded iframe for Google Drive with full mobile permissions -->
+                    <iframe id="course-iframe" style="display: none;" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen" allowfullscreen="true" webkitallowfullscreen="true" mozallowfullscreen="true" referrerpolicy="no-referrer-when-downgrade"></iframe>
                     <!-- Fallback / External Banner if no video -->
                     <div class="video-external-notice" id="video-external-notice" style="display: none;">
                         <i class="bi bi-play-circle"></i>
